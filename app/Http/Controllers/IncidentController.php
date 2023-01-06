@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateIncidentRequest;
 use App\Http\Resources\IncidentsResource;
 use App\Models\Incident;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Http;
 
 class IncidentController extends Controller
 {
@@ -34,13 +35,30 @@ class IncidentController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StoreIncidentRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(StoreIncidentRequest $request)
     {
-        return response()->json(
-            $request
-        );
+        $API_KEY = env('WEATHER_API_KEY');
+        $name = $request->name;
+        $country = $request->country;
+        $city = $request->city;
+        $data = Http::get('https://api.openweathermap.org/data/2.5/weather?q=' . $city . '&appid=' . $API_KEY);
+        $weather_data = $data->json();
+        $temperature = $weather_data['main']['temp'];
+        $humidity = $weather_data['main']['humidity'];
+        $wind_speed = $weather_data['wind']['speed'];
+
+        $incident = Incident::create([
+            'name' => $name,
+            'country' => $country,
+            'city' => $city,
+            'temperature' => $temperature,
+            'humidity' => $humidity,
+            'wind_speed' => $wind_speed
+        ]);
+
+        return new IncidentsResource($incident);
     }
 
     /**
