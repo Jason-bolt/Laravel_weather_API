@@ -35,7 +35,7 @@ class IncidentController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StoreIncidentRequest  $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return IncidentsResource|\Illuminate\Http\JsonResponse
      */
     public function store(StoreIncidentRequest $request)
     {
@@ -44,6 +44,20 @@ class IncidentController extends Controller
         $country = $request->country;
         $city = $request->city;
         $data = Http::get('https://api.openweathermap.org/data/2.5/weather?q=' . $city . '&appid=' . $API_KEY);
+
+//        return response($data);
+        if ($data['cod'] != 200)
+        {
+            return response()->json([
+                'data' => [
+                    'error' => [
+                        'code' => $data['cod'],
+                        'message' => $data['message']
+                    ]
+                ]
+            ]);
+        }
+
         $weather_data = $data->json();
         $temperature = $weather_data['main']['temp'];
         $humidity = $weather_data['main']['humidity'];
@@ -69,7 +83,7 @@ class IncidentController extends Controller
      */
     public function show(Incident $incident)
     {
-        //
+        return new IncidentsResource($incident);
     }
 
     /**
@@ -103,6 +117,7 @@ class IncidentController extends Controller
      */
     public function destroy(Incident $incident)
     {
-        //
+        $incident->delete();
+        return response(null);
     }
 }

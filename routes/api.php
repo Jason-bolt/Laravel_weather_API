@@ -21,6 +21,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 Route::prefix('v1')->group(function(){
-    Route::apiResource('/', IncidentController::class);
+    Route::apiResource('/incidents', IncidentController::class,
+    ['except' => ['create', 'edit', 'update']]);
 }
 );
