@@ -4,18 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreIncidentRequest;
 use App\Http\Requests\UpdateIncidentRequest;
+use App\Http\Resources\IncidentsResource;
 use App\Models\Incident;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class IncidentController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return AnonymousResourceCollection
      */
-    public function index()
+    public function index(): AnonymousResourceCollection
     {
-        //
+        return IncidentsResource::collection(Incident::all());
     }
 
     /**
@@ -36,7 +38,9 @@ class IncidentController extends Controller
      */
     public function store(StoreIncidentRequest $request)
     {
-        //
+        return response()->json(
+            $request
+        );
     }
 
     /**

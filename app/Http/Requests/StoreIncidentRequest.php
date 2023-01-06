@@ -13,7 +13,7 @@ class StoreIncidentRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,9 @@ class StoreIncidentRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'name' => 'required|unique:incidents|max:255',
+            'country' => 'required',
+            'city' => 'required',
         ];
     }
 }
