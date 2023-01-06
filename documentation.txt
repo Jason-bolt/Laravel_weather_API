@@ -1,0 +1,11 @@
+"""
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
+
+protected function failedValidation(Validator $validator)
+{
+    throw new HttpResponseException(response()->json($validator->errors(), 422));
+}
+"""
+
+Added this code snippet above in order to get the validation messages from the Request Class working
